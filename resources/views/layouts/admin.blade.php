@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>@yield('title', 'لوحة التحكم')</title>
-
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     @vite(['resources/css/app.css','resources/js/app.js'])
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
@@ -118,6 +118,18 @@
 
 <!-- SweetAlert2 -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
+<script>
+    window.Echo.private(`App.Models.User.{{ auth()->id() }}`)
+        .notification((notification) => {
+            alert(notification.message); // مثال بسيط
+            // أو عرضها في قائمة إشعارات داخل الصفحة
+            let container = document.getElementById('notifications');
+            let div = document.createElement('div');
+            div.innerText = notification.user + ': ' + notification.message;
+            container.prepend(div);
+        });
+</script>
+<div id="notifications"></div>
+@vite(['resources/js/app.js'])
 </body>
 </html>

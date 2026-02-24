@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Customer;
+use App\Models\User;
+use App\Notifications\UserActionNotification;
 use Illuminate\Http\Request;
 
 class CustomerController extends Controller
@@ -42,7 +44,9 @@ class CustomerController extends Controller
         ]);
 
         Customer::create($validated);
-
+        User::where('is_admin', 1)->get()->each(function ($admin) {
+            $admin->notify(new UserActionNotification(auth()->user()->name . ' أضاف منتج جديد'));
+        });
         return redirect()->route('customers.index')
             ->with('success', 'تم إضافة العميل بنجاح');
     }
